@@ -31,7 +31,7 @@ public class EnemyAI : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision) {
         if (collision.collider.tag == "Player" && !up) {
-            if (player.dashing && player.ult) {
+            if (player.dashing ) {
                 up = true;
                 Debug.Log("enemy up");
                 rb.AddForce(new Vector3(0, bounceUp, 0));
