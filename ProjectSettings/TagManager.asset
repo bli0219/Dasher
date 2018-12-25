@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Block
   - Ground
+  - Zone
+  - Shield
+  - IdleChaser
   layers:
   - Default
   - TransparentFX
