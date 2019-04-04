@@ -27,9 +27,9 @@ namespace MyBehaviorTree {
 				scores = new List<float>(new float[Children.Length]);
 			}
 
-			for (int i = 0; i != Children.Length; i++) {
-				Debug.Log(Children[i].Name + " has score " + scores[i]);
-			}
+			//for (int i = 0; i != Children.Length; i++) {
+			//	Debug.Log(Children[i].Name + " has score " + scores[i]);
+			//}
 
 			if (!ticked) {
 				ticked = true;
@@ -39,11 +39,8 @@ namespace MyBehaviorTree {
 			} else {
 				if (BehaviorTree.lastStatus == NodeStatus.Success)
 					UpdateScore(lastTicked, 1f);
-
-				if (BehaviorTree.lastStatus == NodeStatus.Failure) {
+				if (BehaviorTree.lastStatus == NodeStatus.Failure)
 					UpdateScore(lastTicked, -1f);
-				}
-
 				ticked = false;
 				BehaviorTree.Finish(BehaviorTree.lastStatus);
 			}
@@ -62,13 +59,13 @@ namespace MyBehaviorTree {
 		int WeightedRandom () {
 			int index = 0;
 			float r = Random.Range(0f, scoreSum);
-			Debug.Log("r is " + r);
+			//Debug.Log("r is " + r);
 			r -= scores[0];
-			Debug.Log("r minus scores[0] is " + r);
+			//Debug.Log("r minus scores[0] is " + r);
 			while (r >= 0) {
 				index++;
 				r -= scores[index];
-				Debug.Log("r minus scores[" + index + "] is " + r);
+				//Debug.Log("r minus scores[" + index + "] is " + r);
 			}
 
 			return index;

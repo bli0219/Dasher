@@ -23,36 +23,74 @@ public class Chaser : MonoBehaviour {
 	//int hitCount = 0;
 	//bool dashing = false;
 
+	public bool pathfinding = true;
+	PathFinder pf;
+	Node start;
+	Node goal;
+	List<Node> path;
+	public GameObject target;
+	NodeManager nm;
+
+
 	float alpha = 10f; //Degree to move when NaiveProtect();
 
 	void Awake () {
 		rb = GetComponent<Rigidbody>();
-		//if (usingBT) {
-		//	bt = GetComponent<BehaviorTree>();
-		//	BuildTree();
-		//}
 	}
-
-	//void BuildTree () {
-	//	var rootRepeat = new NaiveRepeater("rootRepeat", bt);
-	//	var approach = new ActionNode("approach", NaiveFollowWrap, bt);
-	//}
 
 	void Start () {
 		chasers.Add(this);
-		player = Player.Instance;
-		escaper = Escaper.Instance;
-		offset = transform.position - escaper.transform.position;
-		startPos = transform.position;
-		stage = Stage.Idle;
+		//player = Player.Instance;
+		//escaper = Escaper.Instance;
+		//offset = transform.position - escaper.transform.position;
+		//startPos = transform.position;
+		//stage = Stage.Idle;
+		if (pathfinding) {
+			pf = new PathFinder();
+			target = Player.Instance.gameObject;
+			nm = NodeManager.Instance;
+		}
 	}
 
 	void Update () {
 		if (Time.timeScale < 0.2f) {
 			return;
 		}
-		if (stage == Stage.Chase) NaiveFollow();
+		if (pathfinding) {
+			PathFollow();
+		}
+		//if (stage == Stage.Chase) NaiveFollow();
 		//if (stage == Stage.Protect) HorizontalProtect();
+	}
+
+
+
+	void PathFollow () {
+		//if (path == null) {
+		FindPath();
+		//}
+
+
+		if (path.Count == 0) {
+			Debug.Log("Path length of 0");
+			return;
+		}
+		if (path[0] == nm.NearestNode(gameObject)) {
+			path.RemoveAt(0);
+		} else {
+			Vector3 dir = (new Vector3(path[0].pos.x, 0, path[0].pos.y) - transform.position);
+			dir.y = 0;
+			Vector3 vel = dir.normalized * moveSpeed / 5f;
+			rb.velocity = vel;
+			//rb.velocity = followDrag * rb.velocity + (1 - followDrag) * newVelocity;
+		}
+	}
+
+	void FindPath () {
+		start = nm.NearestNode(this.gameObject);
+		goal = nm.NearestNode(target.gameObject);
+		pf.Initialize(start, goal);
+		path = pf.AStarPath(start, goal);
 	}
 
 	public void ChaseStage () {
@@ -123,21 +161,21 @@ public class Chaser : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter (Collision collision) {
-		if (collision.collider.tag == "Player" && !up) {
-			if (player.dashing) {
-				up = true;
-				Debug.Log("enemy up");
-				rb.AddForce(new Vector3(0, bounceUp, 0));
-			}
+	//void OnCollisionEnter (Collision collision) {
+	//	if (collision.collider.tag == "Player" && !up) {
+	//		if (player.dashing) {
+	//			up = true;
+	//			Debug.Log("enemy up");
+	//			rb.AddForce(new Vector3(0, bounceUp, 0));
+	//		}
 
-			//if (dashing) {
-			//	hitCount++;
-			//}
-		}
+	//		//if (dashing) {
+	//		//	hitCount++;
+	//		//}
+	//	}
 
-		if (collision.collider.tag == "Ground") {
-			up = false;
-		}
-	}
+	//	if (collision.collider.tag == "Ground") {
+	//		up = false;
+	//	}
+	//}
 }

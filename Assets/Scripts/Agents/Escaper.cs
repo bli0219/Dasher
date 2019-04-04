@@ -43,6 +43,7 @@ public class Escaper : MonoBehaviour {
 	public bool recovering = false;
 	int hitCount = 0;
 	int dashCount = -1;
+
 	float diag = 1 / Mathf.Sqrt(2);
 	List<Vector2> nexts;
 	List<Vector2> posList = new List<Vector2>{
@@ -83,8 +84,8 @@ public class Escaper : MonoBehaviour {
 		bt.Build(
 			root.Build(
 				learner.Build(
-					dashChase,
-					naiveChase
+					naiveChase,
+					dashChase
 				//naiveEscape,
 				//sideEscape
 				)
@@ -286,23 +287,6 @@ public class Escaper : MonoBehaviour {
 		Vector3 newVelocity = dir.normalized * chaseSpeed;
 		rb.velocity = chaseDrag * rb.velocity + (1 - chaseDrag) * newVelocity;
 	}
-
-	//void DashWrap () {
-	//	StartCoroutine("DashCR");
-	//}
-
-	//IEnumerator DashCR () {
-	//	int lastHitCount = hitCount;
-	//	Vector3 dir = (player.transform.position - transform.position).normalized;
-	//	rb.velocity = dir * dashSpeed;
-	//	yield return new WaitForSecondsRealtime(1f);
-
-	//	if (hitCount > lastHitCount) {
-	//		bt.Finish(NodeStatus.Success);
-	//	} else {
-	//		bt.Finish(NodeStatus.Failure);
-	//	}
-	//}
 
 	void ThreatEscape () {
 		float distToPlayer = SqDistTo(player.gameObject.transform.position);
